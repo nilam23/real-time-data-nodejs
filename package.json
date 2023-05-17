@@ -1,0 +1,31 @@
+{
+  "name": "real-time-data-nodejs",
+  "version": "1.0.0",
+  "description": "An application in NodeJS and ExpressJS to demonstrate real-time data using Redis and Socket.io.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nilam23/real-time-data-nodejs.git"
+  },
+  "author": "Nilam Pathak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nilam23/real-time-data-nodejs/issues"
+  },
+  "homepage": "https://github.com/nilam23/real-time-data-nodejs#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
