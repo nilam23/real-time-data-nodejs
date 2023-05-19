@@ -20,6 +20,14 @@ export const USER_AUTH_FIELDS = {
 };
 
 /**
+ * required fields for creating a new post
+ */
+export const POST_CREATION_INPUT_FIELDS = {
+  CAPTION: 'caption',
+  IMAGE: 'image'
+};
+
+/**
  * expiry of jwt token
  */
 export const JWT_TOKEN_EXPIRY = 3600;

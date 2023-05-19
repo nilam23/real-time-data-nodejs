@@ -1,0 +1,42 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import moment from 'moment';
+import { v4 as uuid } from 'uuid';
+import { HTTP_STATUS_CODES, POST_CREATION_INPUT_FIELDS } from '../helpers/constants.js';
+import { isAvailable, sendResponse } from '../helpers/utils.js';
+import { AppError } from '../helpers/error.js';
+import { PostService } from '../services/post.service.js';
+
+export class PostController {
+  /**
+   * @description
+   * the controller method to create a new post
+   * @param {object} req the request object
+   * @param {object} res the response object
+   * @param {object} next the next middleware function in the application's request-response cycle
+   * @returns the newly created post
+   */
+  static async createNewPost(req, res, next) {
+    try {
+      if (!isAvailable(req.body, Object.values(POST_CREATION_INPUT_FIELDS))) return next(new AppError('Some fields are missing', HTTP_STATUS_CODES.BAD_REQUEST));
+
+      const { caption, image } = req.body;
+      const { _id: userId } = req.user;
+      const date = moment().format('DD-MM-YYYY');
+      const image_path = `uploads/${date}/${uuid()}`;
+
+      await PostService.uploadPostImageToS3(image, image_path);
+
+      const { _id: id, comments } = await PostService.createNewPost(caption, image_path, userId);
+
+      return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'Post created successfully', {
+        id, caption, image_path, userId, comments
+      });
+    } catch (error) {
+      return next(new AppError(
+        error.message || 'Internal Server Error',
+        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        error.response || error
+      ));
+    }
+  }
+}

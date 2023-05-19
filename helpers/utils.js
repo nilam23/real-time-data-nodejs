@@ -1,7 +1,11 @@
+/* eslint-disable new-cap */
 /* eslint-disable import/no-extraneous-dependencies */
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import AWS from 'aws-sdk';
 import { JWT_TOKEN_EXPIRY } from './constants.js';
+
+AWS.config.update({ region: process.env.AWS_REGION });
 
 /**
  * @description
@@ -80,3 +84,28 @@ export const getJwtToken = (jwtPayload) => jwt.sign(
   process.env.JWT_SECRET,
   { expiresIn: JWT_TOKEN_EXPIRY }
 );
+
+/**
+ * @description
+ * this method uploads the base64 representation of the input image to an S3 bucket
+ * @param {string} image the base64 representation of the input image
+ * @param {string} image_path the image path inside S3 bucket
+ */
+export const s3ImageUpload = (image, image_path) => {
+  const s3Bucket = new AWS.S3({
+    apiVersion: '2006-03-01',
+    params: {
+      Bucket: process.env.S3_BUCKET_NAME,
+    },
+  });
+
+  const buffer = new Buffer.from(image, 'base64');
+
+  const data = {
+    Key: image_path,
+    Body: buffer,
+    ContentEncoding: 'base64'
+  };
+
+  return s3Bucket.putObject(data).promise();
+};

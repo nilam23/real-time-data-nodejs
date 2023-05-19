@@ -6,6 +6,7 @@ import { createDbConnection } from './configs/db.config.js';
 import { AppError, handleError } from './helpers/error.js';
 import { HTTP_STATUS_CODES } from './helpers/constants.js';
 import { authRoutes } from './routes/auth.routes.js';
+import { postRoutes } from './routes/post.routes.js';
 
 // creating the express application instance
 const app = express();
@@ -17,6 +18,7 @@ app.use(createDbConnection);
 
 // routing
 authRoutes(app);
+postRoutes(app);
 
 app.all('*', (req, _, next) => next(new AppError(
   `Can't find ${req.method} ${req.originalUrl} on this server!`,

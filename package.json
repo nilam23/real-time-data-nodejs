@@ -19,13 +19,16 @@
   },
   "homepage": "https://github.com/nilam23/real-time-data-nodejs#readme",
   "dependencies": {
+    "aws-sdk": "^2.1028.0",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^7.1.1",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.1"
+    "passport-jwt": "^4.0.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^8.40.0",
