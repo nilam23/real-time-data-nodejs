@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
   * 'image_path': specifies the s3 bucket path for the image of the post
   * 'userId': specifies the id of the user who created the post
   * 'comments': specifies the array of comments for a particular post
+  * 'createdAt': specifies the time when the post was created
 */
 const postSchema = new mongoose.Schema({
   caption: {
@@ -34,7 +35,12 @@ const postSchema = new mongoose.Schema({
         ref: 'User'
       }
     }
-  ]
+  ],
+  createdAt: {
+    type: Date,
+    required: [true, 'Please provide a date of creation'],
+    default: Date.now
+  }
 });
 
 export const Post = mongoose.model('post', postSchema);

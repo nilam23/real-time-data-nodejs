@@ -9,5 +9,6 @@ import { AuthMiddlewares } from '../middlewares/auth.middleware.js';
 export const postRoutes = (app) => {
   app
     .route('/posts')
+    .get(PostController.fetchAllPosts)
     .post(AuthMiddlewares.verifyAuth, PostController.createNewPost);
 };

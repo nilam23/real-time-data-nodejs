@@ -1,4 +1,4 @@
-import { s3ImageUpload } from '../helpers/utils.js';
+import { s3ImageUpload, sortByCreatedDate } from '../helpers/utils.js';
 import { Post } from '../models/post.model.js';
 
 export class PostService {
@@ -25,5 +25,18 @@ export class PostService {
    */
   static async uploadPostImageToS3(image, image_path) {
     await s3ImageUpload(image, image_path);
+  }
+
+  /**
+   * @description
+   * the method that fetches all posts from database sorted by their date of creation
+   * @returns posts fetched from database in a sorted order
+   */
+  static async fetchPostsSortedByCreatedDate() {
+    const posts = await Post.find();
+
+    sortByCreatedDate(posts);
+
+    return posts;
   }
 }

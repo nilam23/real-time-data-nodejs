@@ -109,3 +109,11 @@ export const s3ImageUpload = (image, image_path) => {
 
   return s3Bucket.putObject(data).promise();
 };
+
+/**
+ * @description
+ * this method sorts the array of posts by their date of creation
+ * @param {array} posts the array of posts fetched from database
+ * @returns the array of posts sorted by their date of creation
+ */
+export const sortByCreatedDate = (posts) => posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());

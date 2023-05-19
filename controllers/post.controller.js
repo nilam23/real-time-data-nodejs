@@ -39,4 +39,26 @@ export class PostController {
       ));
     }
   }
+
+  /**
+   * @description
+   * the controller method to fetch all posts sorted by their created date
+   * @param {object} req the request object
+   * @param {object} res the response object
+   * @param {object} next the next middleware function in the application's request-response cycle
+   * @returns the posts fetched from database in sorted order
+   */
+  static async fetchAllPosts(_, res, next) {
+    try {
+      const posts = await PostService.fetchPostsSortedByCreatedDate();
+
+      return sendResponse(res, HTTP_STATUS_CODES.OK, 'Posts fetched successfully', posts);
+    } catch (error) {
+      return next(new AppError(
+        error.message || 'Internal Server Error',
+        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        error.response || error
+      ));
+    }
+  }
 }
