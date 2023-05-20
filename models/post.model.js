@@ -33,6 +33,10 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'Please provide the id of the owner'],
         ref: 'User'
+      },
+      ownerName: {
+        type: String,
+        required: [true, 'Please provide the name of the owner']
       }
     }
   ],

@@ -60,4 +60,19 @@ export class PostService {
 
     return post;
   }
+
+  /**
+   * @description
+   * the method that adds a new comment to an existing post and updates the same
+   * @param {object} post the post to be updated
+   * @param {object} commentObj the object containing comments details
+   * @returns the updated post
+   */
+  static async updatePostWithNewComment(post, commentObj) {
+    post.comments.push(commentObj);
+
+    const updatedPost = await post.save();
+
+    return updatedPost;
+  }
 }

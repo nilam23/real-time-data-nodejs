@@ -14,5 +14,6 @@ export const postRoutes = (app) => {
 
   app
     .route('/posts/:id/comments')
-    .get(AuthMiddlewares.verifyAuth, PostController.getCommentsForPost);
+    .get(PostController.getCommentsForPost)
+    .post(AuthMiddlewares.verifyAuth, PostController.addCommentToAPost);
 };
