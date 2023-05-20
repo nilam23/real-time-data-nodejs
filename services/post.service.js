@@ -48,4 +48,16 @@ export class PostService {
 
     return postsWithImageData;
   }
+
+  /**
+   * @description
+   * the method that fetches a post from the database corresponding to an id
+   * @param {string} postId the id of the post
+   * @returns the post fetched from the database
+   */
+  static async getPostById(postId) {
+    const post = await Post.findById(postId);
+
+    return post;
+  }
 }

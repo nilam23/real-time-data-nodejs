@@ -61,4 +61,32 @@ export class PostController {
       ));
     }
   }
+
+  /**
+   * @description
+   * the controller method to fetch all comments for a particular post
+   * @param {object} req the request object
+   * @param {object} res the response object
+   * @param {object} next the next middleware function in the application's request-response cycle
+   * @returns the array of comments for the post
+   */
+  static async getCommentsForPost(req, res, next) {
+    try {
+      if (!req.params) return next(new AppError('Post id is missing from the request', HTTP_STATUS_CODES.BAD_REQUEST));
+
+      const { id: postId } = req.params;
+
+      const post = await PostService.getPostById(postId);
+
+      if (!post) return next(new AppError(`Post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
+
+      return sendResponse(res, HTTP_STATUS_CODES.OK, `All comments fetched for the post with id ${postId}`, post.comments);
+    } catch (error) {
+      return next(new AppError(
+        error.message || 'Internal Server Error',
+        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        error.response || error
+      ));
+    }
+  }
 }
