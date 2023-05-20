@@ -1,11 +1,8 @@
 /* eslint-disable new-cap */
-/* eslint-disable import/no-extraneous-dependencies */
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import AWS from 'aws-sdk';
 import { JWT_TOKEN_EXPIRY } from './constants.js';
-
-AWS.config.update({ region: process.env.AWS_REGION });
+import { S3 } from '../configs/s3.config.js';
 
 /**
  * @description
@@ -87,18 +84,19 @@ export const getJwtToken = (jwtPayload) => jwt.sign(
 
 /**
  * @description
+ * this method sorts the array of posts by their date of creation
+ * @param {array} posts the array of posts fetched from database
+ * @returns the array of posts sorted by their date of creation
+ */
+export const sortByCreatedDate = (posts) => posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+
+/**
+ * @description
  * this method uploads the base64 representation of the input image to an S3 bucket
  * @param {string} image the base64 representation of the input image
  * @param {string} image_path the image path inside S3 bucket
  */
 export const s3ImageUpload = (image, image_path) => {
-  const s3Bucket = new AWS.S3({
-    apiVersion: '2006-03-01',
-    params: {
-      Bucket: process.env.S3_BUCKET_NAME,
-    },
-  });
-
   const buffer = new Buffer.from(image, 'base64');
 
   const data = {
@@ -107,13 +105,20 @@ export const s3ImageUpload = (image, image_path) => {
     ContentEncoding: 'base64'
   };
 
-  return s3Bucket.putObject(data).promise();
+  return S3.putObject(data).promise();
 };
 
 /**
  * @description
- * this method sorts the array of posts by their date of creation
- * @param {array} posts the array of posts fetched from database
- * @returns the array of posts sorted by their date of creation
+ * this method takes an image path for S3 and then fetches the corresponding image object from S3 bucket
+ * @param {string} imagePath the image path inside S3 bucket to retrieve the image object
+ * @returns the image object retrieved from S3
  */
-export const sortByCreatedDate = (posts) => posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+export const getS3ImageObj = async (imagePath) => {
+  const getImageObjResult = await S3.getObject({
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: imagePath
+  }).promise();
+
+  return getImageObjResult;
+};

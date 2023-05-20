@@ -1,4 +1,5 @@
-import { s3ImageUpload, sortByCreatedDate } from '../helpers/utils.js';
+/* eslint-disable no-await-in-loop */
+import { getS3ImageObj, s3ImageUpload, sortByCreatedDate } from '../helpers/utils.js';
 import { Post } from '../models/post.model.js';
 
 export class PostService {
@@ -30,13 +31,21 @@ export class PostService {
   /**
    * @description
    * the method that fetches all posts from database sorted by their date of creation
-   * @returns posts fetched from database in a sorted order
+   * and then returns the posts along with their image data fetched from S3 bucket
+   * @returns posts fetched from database in a sorted order along with image data
    */
   static async fetchPostsSortedByCreatedDate() {
     const posts = await Post.find();
 
     sortByCreatedDate(posts);
 
-    return posts;
+    const postsWithImageData = [];
+    for (let i = 0; i < posts.length; i++) {
+      const imageObjFromS3 = await getS3ImageObj(posts[i].image_path);
+
+      postsWithImageData.push({ ...posts[i]._doc, image: imageObjFromS3.Body });
+    }
+
+    return postsWithImageData;
   }
 }
