@@ -26,6 +26,8 @@ AuthMiddlewares.verifyAuth = async (req, res, next) => passport.authenticate(
       return next();
     }
 
+    if (passportError.message === 'jwt expired') return next(new AppError('Unauthorized! Access token has expired', HTTP_STATUS_CODES.UNAUTHORIZED));
+
     if (passportError.message === 'invalid signature') return next(new AppError('Unauthorized! Invalid access token', HTTP_STATUS_CODES.UNAUTHORIZED));
 
     if (passportError.message === 'No auth token') return next(new AppError('Unauthorized! No access token found', HTTP_STATUS_CODES.UNAUTHORIZED));
