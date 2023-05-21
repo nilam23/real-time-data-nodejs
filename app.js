@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import express from 'express';
 import passport from 'passport';
 import {} from 'dotenv/config.js';
@@ -14,7 +13,9 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(passport.initialize());
+app.use(express.static('public'));
 app.use(createDbConnection);
+app.set('view engine', 'ejs');
 
 // routing
 authRoutes(app);

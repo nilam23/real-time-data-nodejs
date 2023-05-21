@@ -20,13 +20,13 @@ export class PostController {
       if (!isAvailable(req.body, Object.values(POST_CREATION_INPUT_FIELDS))) return next(new AppError('Some fields are missing', HTTP_STATUS_CODES.BAD_REQUEST));
 
       const { caption, image } = req.body;
-      const { _id: userId } = req.user;
+      const { _id: userId, username: name } = req.user;
       const date = moment().format('DD-MM-YYYY');
       const image_path = `uploads/${date}/${uuid()}`;
 
       await PostService.uploadPostImageToS3(image, image_path);
 
-      const { _id: id, comments } = await PostService.createNewPost(caption, image_path, userId);
+      const { _id: id, comments } = await PostService.createNewPost(caption, image_path, { id: userId, name });
 
       return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'Post created successfully', {
         id, caption, image_path, userId, comments
@@ -52,7 +52,11 @@ export class PostController {
     try {
       const posts = await PostService.fetchPostsSortedByCreatedDate();
 
-      return sendResponse(res, HTTP_STATUS_CODES.OK, 'Posts fetched successfully', posts);
+      if (!posts.length) return next(new AppError('No posts found', HTTP_STATUS_CODES.NOT_FOUND));
+
+      // return sendResponse(res, HTTP_STATUS_CODES.OK, 'Posts fetched successfully', posts);
+
+      res.render('posts', { posts });
     } catch (error) {
       return next(new AppError(
         error.message || 'Internal Server Error',
@@ -82,7 +86,9 @@ export class PostController {
 
       if (!post.comments.length) return next(new AppError(`Comments for the post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
 
-      return sendResponse(res, HTTP_STATUS_CODES.OK, `All comments fetched for the post with id ${postId}`, post.comments);
+      // return sendResponse(res, HTTP_STATUS_CODES.OK, `All comments fetched for the post with id ${postId}`, post.comments);
+
+      res.render('comments', { comments: post.comments });
     } catch (error) {
       return next(new AppError(
         error.message || 'Internal Server Error',

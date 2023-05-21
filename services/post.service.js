@@ -8,11 +8,11 @@ export class PostService {
    * the method to create a new post
    * @param {string} caption the caption of the post to be created
    * @param {string} image_path the image path for the post to be created
-   * @param {string} userId the id of the user who has created the post
+   * @param {object} owner the details of the user who created the post
    * @returns the newly created post
    */
-  static async createNewPost(caption, image_path, userId) {
-    const post = await Post.create({ caption, image_path, userId });
+  static async createNewPost(caption, image_path, owner) {
+    const post = await Post.create({ caption, image_path, owner });
 
     return post;
   }
@@ -37,16 +37,23 @@ export class PostService {
   static async fetchPostsSortedByCreatedDate() {
     const posts = await Post.find();
 
-    sortByCreatedDate(posts);
+    if (posts.length) {
+      sortByCreatedDate(posts);
 
-    const postsWithImageData = [];
-    for (let i = 0; i < posts.length; i++) {
-      const imageObjFromS3 = await getS3ImageObj(posts[i].image_path);
+      const postsWithImageData = [];
+      for (let i = 0; i < posts.length; i++) {
+        const imageObjFromS3 = await getS3ImageObj(posts[i].image_path);
 
-      postsWithImageData.push({ ...posts[i]._doc, image: imageObjFromS3.Body });
+        postsWithImageData.push({
+          ...posts[i]._doc,
+          image: imageObjFromS3.Body,
+        });
+      }
+
+      return postsWithImageData;
     }
 
-    return postsWithImageData;
+    return posts;
   }
 
   /**

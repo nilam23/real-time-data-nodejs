@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
   * Following schema describes how a post is stored inside the database
   * 'caption': specifies a caption for the post
   * 'image_path': specifies the s3 bucket path for the image of the post
-  * 'userId': specifies the id of the user who created the post
+  * 'owner': specifies both the id and the username of the user who created the post
   * 'comments': specifies the array of comments for a particular post
   * 'createdAt': specifies the time when the post was created
 */
@@ -18,10 +18,16 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide an image path']
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, 'Please provide the user id'],
-    ref: 'User'
+  owner: {
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, 'Please provide the user id'],
+      ref: 'User'
+    },
+    name: {
+      type: String,
+      required: [true, 'Please provide the user name']
+    }
   },
   comments: [
     {
