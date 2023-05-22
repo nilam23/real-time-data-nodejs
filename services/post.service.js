@@ -9,10 +9,13 @@ export class PostService {
    * @param {string} caption the caption of the post to be created
    * @param {string} image_path the image path for the post to be created
    * @param {object} owner the details of the user who created the post
+   * @param {object} createdAt the date/time at which the post is being created
    * @returns the newly created post
    */
-  static async createNewPost(caption, image_path, owner) {
-    const post = await Post.create({ caption, image_path, owner });
+  static async createNewPost(caption, image_path, owner, createdAt) {
+    const post = await Post.create({
+      caption, image_path, owner, createdAt
+    });
 
     return post;
   }

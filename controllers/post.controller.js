@@ -5,6 +5,7 @@ import { HTTP_STATUS_CODES, POST_CREATION_INPUT_FIELDS } from '../helpers/consta
 import { isAvailable, sendResponse } from '../helpers/utils.js';
 import { AppError } from '../helpers/error.js';
 import { PostService } from '../services/post.service.js';
+import { RedisConfig } from '../configs/redis.config.js';
 
 export class PostController {
   /**
@@ -21,16 +22,26 @@ export class PostController {
 
       const { caption, image } = req.body;
       const { _id: userId, username: name } = req.user;
-      const date = moment().format('DD-MM-YYYY');
-      const image_path = `uploads/${date}/${uuid()}`;
+      const image_path = `uploads/${moment().format('DD-MM-YYYY')}/${uuid()}`;
+      const postCreationTime = moment();
 
       await PostService.uploadPostImageToS3(image, image_path);
 
-      const { _id: id, comments } = await PostService.createNewPost(caption, image_path, { id: userId, name });
+      const { _id: id, comments } = await PostService.createNewPost(caption, image_path, { id: userId, name }, postCreationTime);
 
-      return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'Post created successfully', {
-        id, caption, image_path, userId, comments
-      });
+      const createdPost = {
+        id,
+        caption,
+        image_path,
+        owner: { id: userId, name },
+        comments
+      };
+
+      // publishing the newly created post so that it can be consumed and emitted to the client side
+      const redisConfig = new RedisConfig();
+      await redisConfig.produce('post', JSON.stringify({ ...createdPost, image, createdAt: postCreationTime.toString().split('GMT')[0] }));
+
+      return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'Post created successfully', createdPost);
     } catch (error) {
       return next(new AppError(
         error.message || 'Internal Server Error',
