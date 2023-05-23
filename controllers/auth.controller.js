@@ -23,14 +23,22 @@ export class AuthController {
       return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'User signed up successfully', { id: newUser._id, username });
     } catch (error) {
       let errorMsg = '';
+      let statusCode;
 
-      if (error.code === 11000) errorMsg = 'Username already exists'; // for database unique constraint violation error
-      else if (error.name === 'ValidationError') errorMsg = error.errors[Object.keys(error.errors)[0]].message; // for user password validation error
-      else errorMsg = error.message || 'Internal Server Error'; // for other errors
+      if (error.code === 11000) {
+        errorMsg = 'Username already exists'; // for database unique constraint violation error
+        statusCode = HTTP_STATUS_CODES.BAD_REQUEST;
+      } else if (error.name === 'ValidationError') {
+        errorMsg = error.errors[Object.keys(error.errors)[0]].message; // for user password validation error
+        statusCode = HTTP_STATUS_CODES.BAD_REQUEST;
+      } else {
+        errorMsg = error.message || 'Internal Server Error'; // for other errors
+        statusCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      }
 
       next(new AppError(
         errorMsg,
-        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        statusCode,
         error.response || error
       ));
     }
