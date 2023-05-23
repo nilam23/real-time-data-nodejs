@@ -13,7 +13,7 @@ import { postRoutes } from './routes/post.routes.js';
 import { SocketioService } from './services/socketio.service.js';
 
 // creating the express application instance
-const app = express();
+export const app = express();
 
 // creating the http server and configuring socket io
 export const server = http.createServer(app);
