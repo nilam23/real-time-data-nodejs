@@ -137,7 +137,7 @@ export class PostController {
       // publishing the newly added comment so that it can be consumed and emitted to the client side
       await redisConfig.produce('comment', JSON.stringify(commentObj));
 
-      return sendResponse(res, HTTP_STATUS_CODES.OK, `A new comment added to post with id ${postId}`, updatedPost.comments);
+      return sendResponse(res, HTTP_STATUS_CODES.OK, `A new comment added to post with id ${postId}`, { comments: updatedPost.comments });
     } catch (error) {
       return next(new AppError(
         error.message || 'Internal Server Error',
