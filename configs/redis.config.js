@@ -48,3 +48,8 @@ export class RedisConfig {
     }
   }
 }
+
+/**
+ * exporting an instance of the RedisConfig class
+ */
+export const redisConfig = new RedisConfig();

@@ -20,7 +20,28 @@ function displayPost(post) {
   document.querySelector('.post').appendChild(br);
 }
 
+// displaying the newly added comment
+function displayComment(comment) {
+  const div = document.createElement('div');
+  div.classList.add('card');
+  div.innerHTML = `
+    <h5 class="card-body">
+      ${comment.commentText}, by <i>${comment.ownerName}</i>
+    </h5>
+  `;
+
+  const br = document.createElement('br');
+
+  document.querySelector('.comment').appendChild(div);
+  document.querySelector('.comment').append(br);
+}
+
 // listening for the post creation event
 socket.on('post', (data) => {
   displayPost(data);
+});
+
+// listening for the comment addition event
+socket.on('comment', (data) => {
+  displayComment(data);
 });

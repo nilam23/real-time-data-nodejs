@@ -5,7 +5,7 @@ import { HTTP_STATUS_CODES, POST_CREATION_INPUT_FIELDS } from '../helpers/consta
 import { isAvailable, sendResponse } from '../helpers/utils.js';
 import { AppError } from '../helpers/error.js';
 import { PostService } from '../services/post.service.js';
-import { RedisConfig } from '../configs/redis.config.js';
+import { redisConfig } from '../configs/redis.config.js';
 
 export class PostController {
   /**
@@ -38,7 +38,6 @@ export class PostController {
       };
 
       // publishing the newly created post so that it can be consumed and emitted to the client side
-      const redisConfig = new RedisConfig();
       await redisConfig.produce('post', JSON.stringify({ ...createdPost, image, createdAt: postCreationTime.toString().split('GMT')[0] }));
 
       return sendResponse(res, HTTP_STATUS_CODES.CREATED, 'Post created successfully', createdPost);
@@ -131,7 +130,12 @@ export class PostController {
 
       if (!post) return next(new AppError(`Post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
 
-      const updatedPost = await PostService.updatePostWithNewComment(post, { commentText, ownerId, ownerName });
+      const commentObj = { commentText, ownerId, ownerName };
+
+      const updatedPost = await PostService.updatePostWithNewComment(post, commentObj);
+
+      // publishing the newly added comment so that it can be consumed and emitted to the client side
+      await redisConfig.produce('comment', JSON.stringify(commentObj));
 
       return sendResponse(res, HTTP_STATUS_CODES.OK, `Post with id ${postId} updated successfully`, updatedPost);
     } catch (error) {

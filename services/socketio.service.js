@@ -22,6 +22,12 @@ export class SocketioService {
 
         socket.emit('post', data);
       });
+
+      redisConfig.consume('comment', (message) => {
+        const data = JSON.parse(message);
+
+        socket.emit('comment', data);
+      });
     });
   }
 }
