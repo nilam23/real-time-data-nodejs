@@ -3,6 +3,7 @@
 import supertest from 'supertest';
 import { app } from '../app.js';
 import { User } from '../models/user.model.js';
+import { HTTP_STATUS_CODES } from '../helpers/constants.js';
 
 describe('user auth routes', () => {
   const reqBody = {
@@ -32,28 +33,28 @@ describe('user auth routes', () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.failure)
-        .expect(400);
+        .expect(HTTP_STATUS_CODES.BAD_REQUEST);
     });
 
     it('returns 201 when user sign up is a success', async () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.success)
-        .expect(201);
+        .expect(HTTP_STATUS_CODES.CREATED);
     });
 
     it('returns 500 when trying to sign up using existing username', async () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.success)
-        .expect(500);
+        .expect(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('returns 500 when trying to sign up with password validation fail', async () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.passwordValidation_failure)
-        .expect(500);
+        .expect(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
   });
 
@@ -62,28 +63,28 @@ describe('user auth routes', () => {
       await supertest(app)
         .post('/login')
         .send(reqBody.failure)
-        .expect(400);
+        .expect(HTTP_STATUS_CODES.BAD_REQUEST);
     });
 
     it('returns 200 when user log is a success', async () => {
       await supertest(app)
         .post('/login')
         .send(reqBody.success)
-        .expect(200);
+        .expect(HTTP_STATUS_CODES.OK);
     });
 
     it('returns 401 when use tries to log in with incorrect username', async () => {
       await supertest(app)
         .post('/login')
         .send(reqBody.incorrectUsername_failure)
-        .expect(401);
+        .expect(HTTP_STATUS_CODES.UNAUTHORIZED);
     });
 
     it('returns 401 when use tries to log in with incorrect password', async () => {
       await supertest(app)
         .post('/login')
         .send(reqBody.incorrectPassword_failure)
-        .expect(401);
+        .expect(HTTP_STATUS_CODES.UNAUTHORIZED);
     });
   });
 
