@@ -4,14 +4,17 @@
   <h2>All comments</h2><br>
 
   <div class="comment">
-    <% comments.forEach(comment=> { %>
-      <div class="card">
-        <h5 class="card-body">
-          <%= comment.commentText %>, by <i><%= comment.ownerName %></i>
-        </h5>
-      </div>
-      <br>
-      <% }); %>
+    <% if (!comments.length) { %>
+      <% } else { %>
+        <% comments.forEach(comment => { %>
+          <div class="card">
+            <h5 class="card-body">
+              <%= comment.commentText %>, by <i><%= comment.ownerName %></i>
+            </h5>
+          </div>
+          <br>
+          <% }); %>
+          <% } %>
   </div>
 </div>
 

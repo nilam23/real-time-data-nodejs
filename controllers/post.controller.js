@@ -62,7 +62,7 @@ export class PostController {
     try {
       const posts = await PostService.fetchPostsSortedByCreatedDate();
 
-      if (!posts.length) return next(new AppError('No posts found', HTTP_STATUS_CODES.NOT_FOUND));
+      // if (!posts.length) return next(new AppError('No posts found', HTTP_STATUS_CODES.NOT_FOUND));
 
       // return sendResponse(res, HTTP_STATUS_CODES.OK, 'Posts fetched successfully', posts);
 
@@ -94,7 +94,7 @@ export class PostController {
 
       if (!post) return next(new AppError(`Post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
 
-      if (!post.comments.length) return next(new AppError(`Comments for the post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
+      // if (!post.comments.length) return next(new AppError(`Comments for the post with id ${postId} not found`, HTTP_STATUS_CODES.NOT_FOUND));
 
       // return sendResponse(res, HTTP_STATUS_CODES.OK, `All comments fetched for the post with id ${postId}`, post.comments);
 
