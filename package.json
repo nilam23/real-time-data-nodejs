@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "test": "jest",
-    "test:run-all": "set PORT=0 && jest"
+    "test:concurrent": "set PORT=0 && jest"
   },
   "repository": {
     "type": "git",

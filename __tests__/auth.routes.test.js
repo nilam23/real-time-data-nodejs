@@ -43,18 +43,18 @@ describe('user auth routes', () => {
         .expect(HTTP_STATUS_CODES.CREATED);
     });
 
-    it('returns 500 when trying to sign up using existing username', async () => {
+    it('returns 400 when trying to sign up using existing username', async () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.success)
-        .expect(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+        .expect(HTTP_STATUS_CODES.BAD_REQUEST);
     });
 
-    it('returns 500 when trying to sign up with password validation fail', async () => {
+    it('returns 400 when trying to sign up with password validation fail', async () => {
       await supertest(app)
         .post('/signup')
         .send(reqBody.passwordValidation_failure)
-        .expect(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+        .expect(HTTP_STATUS_CODES.BAD_REQUEST);
     });
   });
 

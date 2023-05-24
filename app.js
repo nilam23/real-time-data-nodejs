@@ -23,7 +23,7 @@ SocketioService.useSocketIo(socketio);
 
 // middlewares
 app.use(express.static(path.join('public')));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(passport.initialize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -45,4 +45,6 @@ app.use((error, req, res, _) => handleError(error, req, res, _));
 // running the server
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => console.log(`Server running on port no ${PORT}`));
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => console.log(`Server running on port no ${PORT}`));
+}

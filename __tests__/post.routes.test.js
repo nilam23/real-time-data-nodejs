@@ -33,14 +33,14 @@ describe('post management routes', () => {
   describe('create a new post', () => {
     it('returns 401 when no access token provided', async () => {
       await supertest(app)
-        .post('/posts')
+        .post('/posts/add')
         .send(reqBody.postCreation)
         .expect(HTTP_STATUS_CODES.UNAUTHORIZED);
     });
 
     it('returns 401 when an incorrect access token is provided', async () => {
       await supertest(app)
-        .post('/posts')
+        .post('/posts/add')
         .send(reqBody.postCreation)
         .set({ Authroization: `Bearer ${incorrectAccessToken}` })
         .expect(HTTP_STATUS_CODES.UNAUTHORIZED);
@@ -64,14 +64,14 @@ describe('post management routes', () => {
   describe('add a new comment to an existing post', () => {
     it('returns 401 when no access token provided', async () => {
       await supertest(app)
-        .post(`/posts/${postIds.existingPID}/comments`)
+        .patch(`/posts/${postIds.existingPID}/comments/add`)
         .send(reqBody.commentAddition)
         .expect(HTTP_STATUS_CODES.UNAUTHORIZED);
     });
 
     it('returns 401 when an incorrect access token is provided', async () => {
       await supertest(app)
-        .post(`/posts/${postIds.existingPID}/comments`)
+        .patch(`/posts/${postIds.existingPID}/comments/add`)
         .send(reqBody.commentAddition)
         .set({ Authroization: `Bearer ${incorrectAccessToken}` })
         .expect(HTTP_STATUS_CODES.UNAUTHORIZED);

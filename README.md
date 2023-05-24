@@ -43,11 +43,12 @@
 4. Move into the project directory using `cd <path_to_project_directory>`
 5. Install the required packages using `npm install`
 6. Create a `.env` file at the root of the directory and set the environment variables as described above.
-7. Now run the application using `npm run start`
+7. Make sure that the `aws cli` is properly configured with `AWS ACCESS KEY` and `AWS SECRET KEY` along with the `AWS REGION`as specified in the `.env`.
+8. Now run the application using `npm run start`
 
 ## Steps to run the test suites
 
-1. `npm run test:run-all`: to run all test cases of the application concurrently.
+1. `npm run test` or `npm run test:concurrent`: to run all test cases of the application concurrently.
 2. To check the code coverage, please move into the `./output` directory and from inside `lcov-report`, open the `index.html` file.
 
 ## APIs and related Schemas
