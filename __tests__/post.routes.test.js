@@ -57,7 +57,7 @@ describe('post management routes', () => {
     it('returns 200 for an existing post with zero or more comments', async () => {
       await supertest(app)
         .get(`/posts/${postIds.existingPID}/comments`)
-        .expect(HTTP_STATUS_CODES.OK || HTTP_STATUS_CODES.NOT_FOUND); // NOT FOUND, if existing post gets deleted later
+        .expect([HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND]); // NOT FOUND, if existing post gets deleted later
     });
   });
 
