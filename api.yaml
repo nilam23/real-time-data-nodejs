@@ -1,0 +1,494 @@
+openapi: '3.0.0'
+info:
+  title: REST APIs and Real Time Data Fetching
+  version: '1.0.0'
+
+schemes: [http, https]
+
+paths:
+  /signup:
+    post:
+      tags:
+        - User Auth Management
+      description: Registers a new user
+      consumes:
+        application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/UserAuthSchema'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 201
+                  message:
+                    type: string
+                    default: 'User signed up successfully'
+                  data:
+                    type: object
+                    default: { "id": "646d2ab7eead2163ece3e658", "username": "demoUser" }
+                  error:
+                    type: object
+                    default: {}
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 400
+                  message:
+                    type: string
+                    default: 'Some fields are missing'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+  /login:
+    post:
+      tags:
+        - User Auth Management
+      description: Logs in an existing and valid user
+      consumes:
+        application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/UserAuthSchema'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 200
+                  message:
+                    type: string
+                    default: 'User logged in successfully'
+                  data:
+                    type: object
+                    default: { "id": "646d2ab7eead2163ece3e658", "username": "demoUser", "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDZkMmFiN2VlYWQyMTYzZWNlM2U2NTgiLCJ1c2VybmFtZSI6ImRlbW9Vc2VyIiwiaWF0IjoxNjg0ODc2NDk1LCJleHAiOjE2ODQ4ODAwOTV9.5N0X-Tvnv7pko-g9qkEMjj0vDVckCB1q8X_8sf9uhQ8" }
+                  error:
+                    type: object
+                    default: {}
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 400
+                  message:
+                    type: string
+                    default: 'Some fields are missing'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 401
+                  message:
+                    type: string
+                    default: 'Incorrect username'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+  /posts:
+    get:
+      tags:
+        - Post Management
+      description: Fetches all posts from the database sorted by date of creation
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+  /posts/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post Management
+      description: Creates a new post
+      consumes:
+        application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+                  default: 'a demo caption'
+                image:
+                  type: string
+                  default: '<base64 representation of the input image>'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 201
+                  message:
+                    type: string
+                    default: 'Post created successfully'
+                  data:
+                    type: object
+                    default: { "id": "646d3d084c5098af958d6c26",  "caption": "Demo caption", "image_path": "uploads/24-05-2023/8806aaee-1528-498f-8a23-4bacd3d43a8b", "owner": { "id": "646d2ab7eead2163ece3e658", "name": "demoUser" }, "comments": [] }
+                  error:
+                    type: object
+                    default: {}
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 400
+                  message:
+                    type: string
+                    default: 'Some fields are missing'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 401
+                  message:
+                    type: string
+                    default: 'Unauthorized! No access token found'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+  /posts/{id}/comments:
+    get:
+      tags:
+        - Post Management
+      description: Fetches all comments for a specific post
+      parameters:
+        - name: id
+          in: path
+          description: a valid post id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 404
+                  message:
+                    type: string
+                    default: 'Post with id 6469cd679050774ce6d7bb8a not found'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: object
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+  /posts/{id}/comments/add:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post Management
+      parameters:
+        - name: id
+          in: path
+          description: a valid post id
+          required: true
+          schema:
+            type: string
+      consumes:
+        application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  default: 'a demo comment'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 200
+                  message:
+                    type: string
+                    default: 'A new comment added to post with id 646c76c2227e5c842d716341'
+                  data:
+                    type: object
+                    default: { comments: [ { "commentText": "a demo comment", "ownerId": "646d2ab7eead2163ece3e658", "ownerName": "demoUser", "_id": "646d385c0fef21181067eb67" } ] }
+                  error:
+                    type: object
+                    default: {}
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 400
+                  message:
+                    type: string
+                    default: 'Comment text is missing'
+                  data:
+                    type: array
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 401
+                  message:
+                    type: string
+                    default: 'Unauthorized! No access token found'
+                  data:
+                    type: array
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": true, "response": {} }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    default: 500
+                  message:
+                    type: string
+                    default: 'Internal Server Error'
+                  data:
+                    type: array
+                    default: []
+                  error:
+                    type: object
+                    default: { "isOperational": false, "response": {} }
+
+components:
+  schemas:
+    UserAuthSchema:
+      type: object
+      properties:
+        username:
+          type: string
+          required: true
+        password:
+          type: string
+          required: true
+    PostSchema:
+      type: object
+      properties:
+        caption:
+          type: string
+          required: true
+        image_path:
+          type: string
+          required: true
+        owner:
+          type: object
+          required: true
+        comments:
+          type: object
+          required: true
+        createdAt:
+          type: date
+          require: true
+    
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

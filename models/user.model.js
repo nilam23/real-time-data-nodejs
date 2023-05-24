@@ -7,22 +7,6 @@ import { getHashPassword } from '../helpers/utils.js';
   * 'username': specifies the unique username of a user
   * 'password': specifies the user password of minimum length of 5
 */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     UserAuthSchema:
- *       type: object
- *       required:
- *         - username
- *         - password
- *       properties:
- *         username:
- *           type: string
- *         password:
- *           type: string
- */
 const userSchema = new mongoose.Schema({
   username: {
     type: String,

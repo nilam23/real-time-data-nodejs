@@ -9,31 +9,6 @@ import mongoose from 'mongoose';
   * 'comments': specifies the array of comments for a particular post
   * 'createdAt': specifies the time when the post was created
 */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     PostSchema:
- *       type: object
- *       required:
- *         - caption
- *         - image_path
- *         - owner
- *         - comments
- *         - createdAt
- *       properties:
- *         caption:
- *           type: string
- *         image:
- *           type: string
- *         owner:
- *           type: object
- *         comments:
- *           type: object
- *         createdAt:
- *           type: date
- */
 const postSchema = new mongoose.Schema({
   caption: {
     type: String,
