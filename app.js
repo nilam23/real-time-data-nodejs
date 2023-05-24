@@ -11,6 +11,7 @@ import { HTTP_STATUS_CODES } from './helpers/constants.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { postRoutes } from './routes/post.routes.js';
 import { SocketioService } from './services/socketio.service.js';
+import { swaggerDocs } from './helpers/swagger.js';
 
 // creating the express application instance
 export const app = express();
@@ -31,6 +32,7 @@ app.use(createDbConnection);
 // routing
 authRoutes(app);
 postRoutes(app);
+swaggerDocs(app);
 
 app.all('*', (req, _, next) => next(new AppError(
   `Can't find ${req.method} ${req.originalUrl} on this server!`,
